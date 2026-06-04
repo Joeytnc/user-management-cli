@@ -1,3 +1,17 @@
+import json
+
+def load_users():
+    try:
+        with open("users.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+
+def save_users(users):
+    with open("users.json", "w") as file:
+        json.dump(users, file, indent=4)
+
 
 def add_user(users):
     while True:
@@ -11,7 +25,6 @@ def add_user(users):
         new_id = max(user["id"] for user in users) + 1
     else:
         new_id = 1
-
 
     while True:
         try:
@@ -27,11 +40,13 @@ def add_user(users):
     }
 
     users.append(user)
+    save_users(users)
     print("User added successfully.")
+
 
 def list_users(users):
     if not users:
-        print("User not exist.")
+        print("No users in system.")
         return
 
     for user in users:
@@ -40,7 +55,7 @@ def list_users(users):
 
 def delete_user(users):
     if not users:
-        print("User not exist.")
+        print("No users in system.")
         return
 
     while True:
@@ -53,10 +68,12 @@ def delete_user(users):
     for user in users:
         if user["id"] == user_id:
             users.remove(user)
+            save_users(users)
             print("User deleted successfully. ")
             return
-
     print("User ID not found.")
+
+
 
 def print_menu():
     print("""
@@ -67,8 +84,9 @@ def print_menu():
     4. Exit
     """)
 
+
 def main():
-    users = []
+    users = load_users()
 
     while True:
         print_menu()
@@ -89,6 +107,7 @@ def main():
 
         else:
             print("\nInvalid choice.")
+
 
 if __name__ == '__main__':
     main()
