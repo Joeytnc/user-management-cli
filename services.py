@@ -1,34 +1,26 @@
 from storage import save_users
 
-def add_user(users):
-    while True:
-        name = input("Please enter your name: ").strip()
-        if name:
-            break
-        else:
-            print("Name cannot be empty.")
-
+def create_user(users, name, age):
     if users:
         new_id = max(user["id"] for user in users) + 1
     else:
         new_id = 1
 
-    while True:
-        try:
-            age = int(input("Please enter your age: "))
-            break
-        except ValueError:
-            print("Age must be an integer.")
-
     user = {
-        "id": new_id,
-        "name": name,
-        "age": age,
-    }
+            "id": new_id,
+            "name": name,
+            "age": age,
+        }
 
     users.append(user)
     save_users(users)
-    print("User added successfully.")
+    return user
+
+
+def add_user(users):
+    name = input("Please enter your name: ").strip()
+    age = int(input("Please enter your age: "))
+    return create_user(users, name, age)
 
 
 def list_users(users):
@@ -40,22 +32,39 @@ def list_users(users):
         print(f'ID: {user["id"]}, Name: {user["name"]}, Age: {user["age"]}')
 
 
+def get_user_by_id(users, user_id):
+    for user in users:
+        if user["id"] == user_id:
+            return user
+    return None
+
+
+def update_user_by_id(users, user_id, name, age):
+    for user in users:
+        if user["id"] == user_id:
+            user["name"] = name
+            user["age"] = age
+
+            save_users(users)
+            return user
+    return None
+
+
 def delete_user(users):
-    if not users:
-        print("No users in system.")
-        return
 
-    while True:
-        try:
-            user_id = int(input("Please enter user id:"))
-            break
-        except ValueError:
-            print("User ID must be an integer.")
+    user_id = int(input("Please enter user id:"))
+    success = delete_user_by_id(users, user_id)
+    if success:
+        print("User deleted successfully.")
+    else:
+        print("User ID not found.")
 
+
+def delete_user_by_id(users, user_id):
     for user in users:
         if user["id"] == user_id:
             users.remove(user)
             save_users(users)
-            print("User deleted successfully. ")
-            return
-    print("User ID not found.")
+            return True
+
+    return False
