@@ -43,9 +43,9 @@ def delete_user(user_id: int):
 @app.put("/users/{user_id}")
 def update_user(user_id: int, user: UserCreate):
     users = load_users()
-    update_user = update_user_by_id(users, user_id, user.name, user.age)
-    if update_user:
-        return update_user
+    updated_user = update_user_by_id(users, user_id, user.name, user.age)
+    if updated_user:
+        return updated_user
     return {"message": "User ID not found."}
 
 
